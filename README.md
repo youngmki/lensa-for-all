@@ -76,7 +76,7 @@ python upload_files.py
 3. In the terminal, run the following script to fine-tune the model and deploy it to a *SageMaker Endpoint*.  This should take just over an hour.
 
 ```bash
-python tune_and_deploy_models.py
+python train_and_deploy_models.py
 ```
 
 4. Run the *Jupyter Notebook* file as follows and follow the instructions there. When you're done using the model, be sure to remove the *SageMaker Endpoint* to avoid unnecessary costs.

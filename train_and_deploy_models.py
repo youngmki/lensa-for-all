@@ -44,7 +44,7 @@ from utils.misc import (
 
 
 IS_MODEL_ALREADY_UPLOADED = False
-TRAIN_MODEL_IDS = [
+HF_MODEL_IDS = [
     "Gustavosta/MagicPrompt-Stable-Diffusion",
     "model-txt2img-stabilityai-stable-diffusion-v2-1-base",
     "runwayml/stable-diffusion-v1-5",
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     # Compressing the GPT2 Downloaded from the HuggingFace Hub and Uploading it to S3
 
     train_model_uri = (
-        f"s3://{bucket}/{base_prefix}/{TRAIN_MODEL_IDS[0].rsplit('/', maxsplit=1)[-1]}"
+        f"s3://{bucket}/{base_prefix}/{HF_MODEL_IDS[0].rsplit('/', maxsplit=1)[-1]}"
     )
 
     if IS_MODEL_ALREADY_UPLOADED:
@@ -120,7 +120,7 @@ if __name__ == "__main__":
 
     else:
         snapshot_dir = snapshot_download(
-            repo_id=TRAIN_MODEL_IDS[0], use_auth_token=hf_token
+            repo_id=HF_MODEL_IDS[0], use_auth_token=hf_token
         )
 
         model_dir = Path(f"model-{random.getrandbits(16)}")
@@ -160,26 +160,26 @@ if __name__ == "__main__":
                 region=region_name,
                 instance_type=train_instance_type,
                 image_scope=TRAIN_SCOPE,
-                model_id=TRAIN_MODEL_IDS[1],
+                model_id=HF_MODEL_IDS[1],
                 model_version=TRAIN_MODEL_VERSION,
             )
 
             train_source_uri = script_uris.retrieve(
                 region=region_name,
-                model_id=TRAIN_MODEL_IDS[1],
+                model_id=HF_MODEL_IDS[1],
                 model_version=TRAIN_MODEL_VERSION,
                 script_scope=TRAIN_SCOPE,
             )
 
             train_model_uri = model_uris.retrieve(
                 region=region_name,
-                model_id=TRAIN_MODEL_IDS[1],
+                model_id=HF_MODEL_IDS[1],
                 model_version=TRAIN_MODEL_VERSION,
                 model_scope=TRAIN_SCOPE,
             )
 
             params = hyperparameters.retrieve_default(
-                model_id=TRAIN_MODEL_IDS[1], model_version=TRAIN_MODEL_VERSION
+                model_id=HF_MODEL_IDS[1], model_version=TRAIN_MODEL_VERSION
             )
             params["with_prior_preservation"] = (
                 "False"
@@ -192,7 +192,7 @@ if __name__ == "__main__":
             params["seed"] = RANDOM_SEED
 
             train_job_name = name_from_base(
-                f"{base_prefix}-{TRAIN_MODEL_IDS[1].replace('/', '-').replace('_', '-')}"
+                f"{base_prefix}-{HF_MODEL_IDS[1].replace('/', '-').replace('_', '-')}"
             )
 
             estimator = Estimator(
@@ -240,7 +240,7 @@ if __name__ == "__main__":
 
         else:
             params = {
-                "pretrained_model_name_or_path": TRAIN_MODEL_IDS[2],
+                "pretrained_model_name_or_path": HF_MODEL_IDS[2],
                 "instance_prompt": f"'a photo of {subject_name} {class_name}'",
                 "seed": RANDOM_SEED,
                 "train_batch_size": 1 if batch_size is None else batch_size,
@@ -270,7 +270,7 @@ if __name__ == "__main__":
                 params["wandb_api_key"] = wandb_api_key
 
             train_job_name = name_from_base(
-                f"{base_prefix}-{TRAIN_MODEL_IDS[2].replace('/', '-').replace('_', '-')}"
+                f"{base_prefix}-{HF_MODEL_IDS[2].replace('/', '-').replace('_', '-')}"
             )
 
             estimator = HuggingFace(
@@ -300,12 +300,12 @@ if __name__ == "__main__":
         region=region_name,
         instance_type=infer_instance_type,
         image_scope=INFER_SCOPE,
-        model_id=TRAIN_MODEL_IDS[1],
+        model_id=HF_MODEL_IDS[1],
         model_version=TRAIN_MODEL_VERSION,
     )
 
     infer_source_uri = script_uris.retrieve(
-        model_id=TRAIN_MODEL_IDS[1],
+        model_id=HF_MODEL_IDS[1],
         model_version=TRAIN_MODEL_VERSION,
         script_scope=INFER_SCOPE,
     )

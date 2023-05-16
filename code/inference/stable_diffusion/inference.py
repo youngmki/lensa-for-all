@@ -6,10 +6,11 @@ import base64
 from io import BytesIO
 from typing import Any, Dict, List, Union
 import torch
-from diffusers import DDIMScheduler, StableDiffusionPipeline
+from diffusers import DDIMScheduler, StableDiffusionPipeline  # noqa
 
 
 def model_fn(model_dir: str) -> Any:
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     scheduler = DDIMScheduler(
         beta_start=0.00085,
         beta_end=0.012,
@@ -17,38 +18,37 @@ def model_fn(model_dir: str) -> Any:
         clip_sample=False,
         set_alpha_to_one=True,
     )
-    pipe = StableDiffusionPipeline.from_pretrained(
+    model = StableDiffusionPipeline.from_pretrained(
         model_dir,
         scheduler=scheduler,
         revision="fp16",
         torch_dtype=torch.float16,
-    )
-    pipe = pipe.to("cuda")
+    ).to(device)
 
-    # pipe.enable_vae_tiling()
-    # pipe.enable_attention_slicing()
-    pipe.enable_xformers_memory_efficient_attention()
+    # model.enable_vae_tiling()
+    # model.enable_attention_slicing()
+    model.enable_xformers_memory_efficient_attention()
 
-    return pipe
+    return model
 
 
 def predict_fn(
-    input_data: Dict[str, Union[int, float, str]], pipe: Any
+    data: Dict[str, Union[int, float, str]], model: Any
 ) -> Dict[str, List[str]]:
-    prompt = input_data.pop("prompt", input_data)
-    negative_prompt = input_data.pop("negative_prompt", None)
-    num_inference_steps = input_data.pop("num_inference_steps", 50)
-    guidance_scale = input_data.pop("guidance_scale", 7.5)
-    num_images_per_prompt = input_data.pop("num_images_per_prompt", 4)
-    width = input_data.pop("width", 512)
-    height = input_data.pop("height", 512)
+    prompt = data.pop("prompt", data)
+    negative_prompt = data.pop("negative_prompt", None)
+    num_inference_steps = data.pop("num_inference_steps", 50)
+    guidance_scale = data.pop("guidance_scale", 7.5)
+    num_images_per_prompt = data.pop("num_images_per_prompt", 4)
+    width = data.pop("width", 512)
+    height = data.pop("height", 512)
 
     if negative_prompt is None or len(negative_prompt) == 0:
         kwargs = {}
     else:
         kwargs = {"negative_prompt": negative_prompt}
 
-    generated_images = pipe(
+    generated_images = model(
         prompt,
         num_inference_steps=num_inference_steps,
         guidance_scale=guidance_scale,
