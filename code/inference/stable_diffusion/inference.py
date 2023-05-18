@@ -46,6 +46,7 @@ def predict_fn(
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     negative_prompt = None if len(negative_prompt) == 0 else negative_prompt
+    generator = torch.Generator(device=device).manual_seed(seed)
 
     generated_images = model(
         prompt,
@@ -55,7 +56,7 @@ def predict_fn(
         guidance_scale=guidance_scale,
         negative_prompt=negative_prompt,
         num_images_per_prompt=num_images_per_prompt,
-        generator=torch.Generator(device=device).manual_seed(seed),
+        generator=generator,
     )["images"]
 
     encoded_images = []
