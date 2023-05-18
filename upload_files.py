@@ -59,3 +59,5 @@ if __name__ == "__main__":
         file_ext_to_excl=["DS_Store"],
         logger=logger,
     )
+
+    logger.info("The 'Uploading images' job finished successfully.")

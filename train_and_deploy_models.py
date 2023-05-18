@@ -362,6 +362,6 @@ if __name__ == "__main__":
     )
 
     logger.info(
-        "Fine-tuning the stable diffusion model and deploying an endpoint to %s is complete.",
+        "Training the stable diffusion model and deploying an endpoint to %s is complete.",
         endpoint_name,
     )

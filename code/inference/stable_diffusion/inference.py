@@ -36,26 +36,26 @@ def predict_fn(
     data: Dict[str, Union[int, float, str]], model: Any
 ) -> Dict[str, List[str]]:
     prompt = data.pop("prompt", data)
-    negative_prompt = data.pop("negative_prompt", None)
+    height = data.pop("height", 512)
+    width = data.pop("width", 512)
     num_inference_steps = data.pop("num_inference_steps", 50)
     guidance_scale = data.pop("guidance_scale", 7.5)
+    negative_prompt = data.pop("negative_prompt", None)
     num_images_per_prompt = data.pop("num_images_per_prompt", 4)
-    width = data.pop("width", 512)
-    height = data.pop("height", 512)
+    seed = data.pop("seed", 42)
 
-    if negative_prompt is None or len(negative_prompt) == 0:
-        kwargs = {}
-    else:
-        kwargs = {"negative_prompt": negative_prompt}
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    negative_prompt = None if len(negative_prompt) == 0 else negative_prompt
 
     generated_images = model(
         prompt,
+        height=height,
+        width=width,
         num_inference_steps=num_inference_steps,
         guidance_scale=guidance_scale,
+        negative_prompt=negative_prompt,
         num_images_per_prompt=num_images_per_prompt,
-        width=width,
-        height=height,
-        **kwargs,
+        generator=torch.Generator(device=device).manual_seed(seed),
     )["images"]
 
     encoded_images = []

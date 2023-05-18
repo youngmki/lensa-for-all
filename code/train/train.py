@@ -22,34 +22,34 @@ import os
 import warnings
 from pathlib import Path
 
-import accelerate
+import accelerate  # noqa
 import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.utils.checkpoint
 import transformers
-from accelerate import Accelerator
-from accelerate.logging import get_logger
-from accelerate.utils import ProjectConfiguration, set_seed
+from accelerate import Accelerator  # noqa
+from accelerate.logging import get_logger  # noqa
+from accelerate.utils import ProjectConfiguration, set_seed  # noqa
 from huggingface_hub import create_repo, upload_folder
 from packaging import version
 from PIL import Image
 from torch.utils.data import Dataset
-from torchvision import transforms
+from torchvision import transforms  # noqa
 from tqdm.auto import tqdm
 from transformers import AutoTokenizer, PretrainedConfig
 
-import diffusers
-from diffusers import (
-    AutoencoderKL,
-    DDPMScheduler,
-    DiffusionPipeline,
-    DPMSolverMultistepScheduler,
-    UNet2DConditionModel,
+import diffusers  # noqa
+from diffusers import (  # noqa
+    AutoencoderKL,  # noqa
+    DDPMScheduler,  # noqa
+    DiffusionPipeline,  # noqa
+    DPMSolverMultistepScheduler,  # noqa
+    UNet2DConditionModel,  # noqa
 )
-from diffusers.optimization import get_scheduler
-from diffusers.utils import check_min_version, is_wandb_available
-from diffusers.utils.import_utils import is_xformers_available
+from diffusers.optimization import get_scheduler  # noqa
+from diffusers.utils import check_min_version, is_wandb_available  # noqa
+from diffusers.utils.import_utils import is_xformers_available  # noqa
 
 
 if is_wandb_available():
@@ -133,7 +133,7 @@ def import_model_class_from_model_name_or_path(
 
         return CLIPTextModel
     elif model_class == "RobertaSeriesModelWithTransformation":
-        from diffusers.pipelines.alt_diffusion.modeling_roberta_series import (
+        from diffusers.pipelines.alt_diffusion.modeling_roberta_series import (  # noqa
             RobertaSeriesModelWithTransformation,
         )
 
