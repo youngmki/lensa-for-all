@@ -55,7 +55,6 @@ PY_VERSION = "py39"
 TRAIN_MODEL_VERSION = "*"
 TRAIN_SCOPE = "training"
 INFER_SCOPE = "inference"
-RANDOM_SEED = 42
 
 
 if __name__ == "__main__":
@@ -189,7 +188,7 @@ if __name__ == "__main__":
             params["max_steps"] = "None" if max_steps is None else str(max_steps)
             params["batch_size"] = 1 if batch_size is None else batch_size
             params["learning_rate"] = 2e-06 if learning_rate is None else learning_rate
-            params["seed"] = RANDOM_SEED
+            params["seed"] = 42
 
             train_job_name = name_from_base(
                 f"{base_prefix}-{HF_MODEL_IDS[1].replace('/', '-').replace('_', '-')}"
@@ -242,7 +241,7 @@ if __name__ == "__main__":
             params = {
                 "pretrained_model_name_or_path": HF_MODEL_IDS[2],
                 "instance_prompt": f"'a photo of {subject_name} {class_name}'",
-                "seed": RANDOM_SEED,
+                "seed": 42,
                 "train_batch_size": 1 if batch_size is None else batch_size,
                 "learning_rate": 2e-06 if learning_rate is None else learning_rate,
                 "lr_warmup_steps": 0,
