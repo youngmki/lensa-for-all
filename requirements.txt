@@ -1,4 +1,5 @@
 awscli==1.25.60
+boto3==1.26.122
 huggingface_hub==0.14.1
 jupyter==1.0.0
 matplotlib==3.7.0

@@ -1,17 +1,12 @@
 # Here are some references.
-# https://github.com/huggingface/accelerate
-# https://huggingface.co/docs/accelerate/usage_guides/sagemaker
+# https://github.com/huggingface/notebooks/tree/main/sagemaker
 # https://github.com/aws/sagemaker-huggingface-inference-toolkit
 # https://aws.amazon.com/blogs/machine-learning/hugging-face-on-amazon-sagemaker-bring-your-own-scripts-and-data/
-# https://github.com/huggingface/notebooks/blob/main/sagemaker/17_custom_inference_script/sagemaker-notebook.ipynb
+# https://huggingface.co/docs/accelerate/usage_guides/sagemaker
 # https://huggingface.co/docs/diffusers/training/dreambooth
-# https://github.com/huggingface/diffusers/tree/main/examples/dreambooth
-# https://github.com/ShivamShrirao/diffusers/tree/main/examples/dreambooth
-# https://aws.amazon.com/blogs/machine-learning/fine-tune-text-to-image-stable-diffusion-models-with-amazon-sagemaker-jumpstart/
-# https://towardsdatascience.com/how-to-fine-tune-stable-diffusion-using-dreambooth-dfa6694524ae
+# https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py
 # https://techpp.com/2022/10/10/how-to-train-stable-diffusion-ai-dreambooth/
 # https://github.com/JoePenna/Dreambooth-Stable-Diffusion
-# https://github.com/sayakpaul/dreambooth-keras
 
 import os
 import random
@@ -108,7 +103,7 @@ if __name__ == "__main__":
     train_ds_path = f"s3://{bucket}/{base_prefix}/{dataset_prefix}/"
     output_path = f"s3://{bucket}/{base_prefix}/output"
 
-    # Compressing the GPT2 Downloaded from the HuggingFace Hub and Uploading it to S3
+    # Compressing the GPT2 downloaded from the HuggingFace Hub and uploading it to S3
 
     train_model_uri = (
         f"s3://{bucket}/{base_prefix}/{HF_MODEL_IDS[0].rsplit('/', maxsplit=1)[-1]}"
@@ -150,7 +145,7 @@ if __name__ == "__main__":
         sagemaker_session=sm_session,
     )
 
-    # Fine-tuning the Stable Diffusion Model in SageMaker Jumpstart with Dreambooth
+    # Fine-tuning the Stable Diffusion model in SageMaker Jumpstart with Dreambooth
 
     if model_data is None:
         if use_jumpstart:
@@ -292,7 +287,7 @@ if __name__ == "__main__":
         logger.info("The hyperparameters are as below.")
         logger.info(pformat(params))
 
-    # Combining and Deploying Models into a Pipeline
+    # Combining and deploying models to an endpoint
 
     infer_image_uri = image_uris.retrieve(
         framework=None,

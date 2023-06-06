@@ -132,14 +132,13 @@ def import_model_class_from_model_name_or_path(
         from transformers import CLIPTextModel
 
         return CLIPTextModel
-    elif model_class == "RobertaSeriesModelWithTransformation":
+    if model_class == "RobertaSeriesModelWithTransformation":
         from diffusers.pipelines.alt_diffusion.modeling_roberta_series import (  # noqa
             RobertaSeriesModelWithTransformation,
         )
 
         return RobertaSeriesModelWithTransformation
-    else:
-        raise ValueError(f"{model_class} is not supported.")
+    raise ValueError(f"{model_class} is not supported.")
 
 
 def parse_args(input_args=None):
@@ -516,7 +515,7 @@ def parse_args(input_args=None):
         args = parser.parse_args()
 
     env_local_rank = int(os.environ.get("LOCAL_RANK", -1))
-    if env_local_rank != -1 and env_local_rank != args.local_rank:
+    if env_local_rank not in (-1, args.local_rank):
         args.local_rank = env_local_rank
 
     if args.with_prior_preservation:
@@ -836,7 +835,7 @@ def main(args):
         # create custom saving & loading hooks so that `accelerator.save_state(...)` serializes in a nice format
         def save_model_hook(models, weights, output_dir):
             for model in models:
-                sub_dir = "unet" if type(model) == type(unet) else "text_encoder"
+                sub_dir = "unet" if isinstance(model, type(unet)) else "text_encoder"
                 model.save_pretrained(os.path.join(output_dir, sub_dir))
 
                 # make sure to pop weight so that corresponding model is not saved again
@@ -847,7 +846,7 @@ def main(args):
                 # pop models so that they are not loaded again
                 model = models.pop()
 
-                if type(model) == type(text_encoder):
+                if isinstance(model, type(text_encoder)):
                     # load transformers style into model
                     load_model = text_encoder_cls.from_pretrained(
                         input_dir, subfolder="text_encoder"
@@ -877,7 +876,9 @@ def main(args):
             xformers_version = version.parse(xformers.__version__)
             if xformers_version == version.parse("0.0.16"):
                 logger.warn(
-                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during training, please update xFormers to at least 0.0.17. See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
+                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems \
+                    during training, please update xFormers to at least 0.0.17. \
+                    See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
                 )
             unet.enable_xformers_memory_efficient_attention()
         else:
@@ -927,10 +928,10 @@ def main(args):
     if args.use_8bit_adam:
         try:
             import bitsandbytes as bnb
-        except ImportError:
+        except ImportError as exc:
             raise ImportError(
                 "To use 8-bit Adam, please install the bitsandbytes library: `pip install bitsandbytes`."
-            )
+            ) from exc
 
         optimizer_class = bnb.optim.AdamW8bit
     else:
@@ -1236,6 +1237,7 @@ def main(args):
             upload_folder(
                 repo_id=repo_id,
                 folder_path=args.output_dir,
+                token=args.hub_token,  # newly added
                 commit_message="End of training",
                 ignore_patterns=["step_*", "epoch_*"],
             )
