@@ -1,9 +1,9 @@
 environment:
   iam_profile_name: default
   region_name: us-east-1
-  iam_role:
+  iam_role: AmazonSageMaker-ExecutionRole-20210114T163887
   ebs_dataset_dir: input_directory
-  s3_bucket:
+  s3_bucket: sagemaker-us-east-1-998601677581
   s3_base_prefix: lensa-for-all
   s3_dataset_prefix: input_directory
   hf_token:
@@ -15,7 +15,7 @@ input:
 
 model:
   use_jumpstart: False
-  model_data:
+  model_data: lensa-for-all-runwayml-stable-diffusion-2023-04-29-11-52-45-662
   with_prior_preservation: True
   train_text_encoder: True
   max_steps: 300

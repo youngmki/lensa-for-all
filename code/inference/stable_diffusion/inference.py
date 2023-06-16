@@ -6,13 +6,10 @@ from diffusers import DDIMScheduler, StableDiffusionPipeline  # noqa
 
 
 def model_fn(model_dir: str) -> Any:
-    beta_start = 0.00085
-    beta_end = 0.012
-
     device = "cuda" if torch.cuda.is_available() else "cpu"
     scheduler = DDIMScheduler(
-        beta_start=beta_start,
-        beta_end=beta_end,
+        beta_start=0.00085,
+        beta_end=0.012,
         beta_schedule="scaled_linear",
         clip_sample=False,
         set_alpha_to_one=True,

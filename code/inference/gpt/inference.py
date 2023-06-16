@@ -27,10 +27,12 @@ def predict_fn(
     use_magic_prompt = data.pop("use_magic_prompt", "False")
     use_magic_prompt = ast.literal_eval(use_magic_prompt)
 
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
     if use_magic_prompt:
         prompt = data.pop("prompt")
         prompt = prompt if prompt[-1] == "," else prompt + ","
-        input_ids = tokenizer.encode(prompt, return_tensors="pt")
+        input_ids = tokenizer.encode(prompt, return_tensors="pt").to(device)
         output = model.generate(input_ids, max_length=MAX_LENGTH, do_sample=DO_SAMPLE)
         prompt = tokenizer.decode(output[0], skip_special_tokens=True)
         data["prompt"] = prompt
