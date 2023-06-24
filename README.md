@@ -96,10 +96,8 @@ Also, fine-tuning the text encoder along with the image generator has been shown
 
 ## Roadmap
 - - -
-- [ ] Provides quality prompt templates from [*PromptHero*](https://prompthero.com/) and more.
-- [ ] Enable early stopping of model training based on [*FID*](https://arxiv.org/pdf/1706.08500.pdf) scores.
-- [ ] Instead of manually generating images using *Jupyter Notebook*, create a *Python* script that automatically generates the desired number of images.
-- [ ] Redesign each workflow to be object-oriented, and organize and register them as a *Python* package.
+- [ ] Enable early stopping of model training based on [evaluation metrics](https://huggingface.co/docs/diffusers/conceptual/evaluation).
+- [ ] Apply the [Dreambooth-LoRA](https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth_lora.py) technique.
 
 ## References
 - - -
